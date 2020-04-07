@@ -3,29 +3,23 @@
 var myGamePiece, myObstacles, myScore, myHealth;
 
 // Game logic varialble declaration
-var i, height, minGap, maxGap, obstacleDetails, numberOfLanes, x, y, randomObstacle;
-
-/* var myObstacles;
-var myScore;
-var myHealth; */
+var i, height, minGap, maxGap, obstacleTypes, numberOfLanes, x, y, randomObstacle;
 
 function init() {
-    // initialisation stuff here
     // Types of obstacles
-    obstacleDetails = [
-        {src: "corona.png", caption: "virus"}, 
-        {src: "mask.jpg", caption: "mask"},
-        {src: "plaintea.jpg", caption: "plaintea"},
-        {src: "sneeze.jpg", caption: "sneeze"},
-        {src: "zombie.jpg", caption: "zombie"}
+    obstacleTypes = [
+        {src: "corona.png", caption: "virus", injurious: true}, 
+        {src: "mask.jpg", caption: "mask", injurious: false},
+        {src: "plaintea.jpg", caption: "plaintea", injurious: false},
+        {src: "sneeze.jpg", caption: "sneeze", injurious: true},
+        {src: "zombie.jpg", caption: "zombie", injurious: true}
     ];
 }
   
 init();
 
-
 function startGame() {
-    myGamePiece = new component(30, 30, "sonic.jpg", 10, 120, "image", "Sonic");
+    myGamePiece = new component(30, 30, "sonic.jpg", 10, 120, "image", "sonic");
     myScore = new component("30px", "Consolas", "black", 280, 40, "text", "myScore");
     myHealth = new component("30px", "Consolas", "black", 40, 40, "text", "myHealth"); // Health Edit #1
     myObstacles = [];
@@ -110,23 +104,9 @@ function component(width, height, color, x, y, type, caption) {
             (myright < otherleft) ||
             (myleft > otherright)) {
             crash = false;
-        } else {
+        } /* else {
             console.log(otherobj.caption);
-
-            switch(otherobj.caption) {
-                case "Banana":
-                  text = "Banana is good!";
-                  break;
-                case "Orange":
-                  text = "I am not a fan of orange.";
-                  break;
-                case "Apple":
-                  text = "How you like them apples?";
-                  break;
-                default:
-                  text = "I have never heard of that fruit...";
-              }
-        }
+        } */
         return crash;
     }
 }
@@ -136,7 +116,17 @@ function updateGameArea() {
     var x, y;
     for (i = 0; i < myObstacles.length; i += 1) {
         if (myGamePiece.crashWith(myObstacles[i])) {
-            myGameArea.healthCount -= 0.5; // Health Edit #
+            
+            for(j=0; j<obstacleTypes.length; j++){
+                if(myObstacles[i].caption == obstacleTypes[j].caption){
+                    /* console.log("Is injurios: " + obstacleTypes[j].injurious); */
+                    if (obstacleTypes[j].injurious) {
+                        myGameArea.healthCount -= 0.5;
+                    }else if(myGameArea.healthCount != 100){
+                        myGameArea.healthCount += 0.5;
+                    }
+                }
+            }
 
             if (myGameArea.healthCount<=-0.5){
                 console.log("Game over!")
@@ -149,18 +139,9 @@ function updateGameArea() {
     myGameArea.frameNo += 1;
     if (myGameArea.frameNo == 1 || everyinterval(150)) {
         x = myGameArea.canvas.width;
-        /* minHeight = 50; //20
-        maxHeight = 100; //200
-        height = Math.floor(Math.random() * (maxHeight - minHeight + 1) + minHeight); */
         height = 40;
         minGap = 40;
         maxGap = 50;
-        /* gap1 = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap); // Three random gaps in between - Y coordinates
-        gap2 = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap);
-        gap3 = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap);
-        myObstacles.push(new component(height, height, "corona.png", x, gap1, "image", "Virus"));
-        myObstacles.push(new component(height, height, "corona.png", x, (height+gap1+gap2), "image", "Virus"));
-        myObstacles.push(new component(height, height, "mask.png", x, (height+height+gap1+gap2+gap3), "image", "MASK")); */
 
         // Picking random number of lanes
         numberOfLanes = Math.floor(Math.random() * 3) + 1;
@@ -171,7 +152,7 @@ function updateGameArea() {
             }else{
                 y += (height + Math.floor(Math.random() * (maxGap - minGap + 1) + minGap));
             }
-            randomObstacle = obstacleDetails[ Math.floor(Math.random() * obstacleDetails.length) ];
+            randomObstacle = obstacleTypes[ Math.floor(Math.random() * obstacleTypes.length) ];
             myObstacles.push(new component(height, height, randomObstacle.src, x, y, "image", randomObstacle.caption));
         }
     }
@@ -197,11 +178,12 @@ function updateGameArea() {
     }
     myGamePiece.newPos();
     myGamePiece.update();
-
+ 
+    // Score updating
     myScore.text = "SCORE: " + myGameArea.frameNo;
     myScore.update();
 
-    // Health Edit #2
+    // Health updating
     myHealth.text = "Health: " + myGameArea.healthCount;
     myHealth.update();
     
@@ -241,8 +223,6 @@ function restartGame() {
     myGameArea.clear();
     startGame();
 }
-
-
 
 function pause() {
     var pause = document.getElementById("pause");

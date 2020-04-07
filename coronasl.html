@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <style>
+            canvas {
+                border: 1px solid #d3d3d3;
+                background-color: #f1f1f1;
+            }
+        </style>
+
+        <script type="text/javascript" src="coronasl.js"></script>
+    </head>
+
+    <body onLoad="startGame()">
+
+        <p>We have created a game area! (or atleast an empty)</p>
+
+        <div style="text-align:center;width:480px;">
+            <button onmousedown="move('up')" onmouseup="clearmove()" ontouchstart="move('up')">UP</button><br><br>
+            <button onmousedown="move('left')" onmouseup="clearmove()" ontouchstart="move('left')">LEFT</button>
+            <button onmousedown="move('right')" onmouseup="clearmove()" ontouchstart="move('right')">RIGHT</button><br><br>
+            <button onmousedown="move('down')" onmouseup="clearmove()" ontouchstart="move('down')">DOWN</button>
+
+            <br><br>
+            <button onclick="restartGame()">RESTART</button>
+
+            <br><br>
+            <button onclick="pause()" id="pause" >PAUSE</button>
+            <button onclick="play()" id="play" disabled>PLAY</button>
+        </div>
+          
+        <p>See the image changes when you click on a button.</p>
+       
+    </body>
+</html>

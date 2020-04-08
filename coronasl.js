@@ -219,6 +219,11 @@ function clearmove() {
 }
 
 function restartGame() { 
+
+    var pause = document.getElementById("pause");
+    var play = document.getElementById("play");
+    play.disabled = true;
+    pause.disabled = false;
     myGameArea.stop();
     myGameArea.clear();
     startGame();
